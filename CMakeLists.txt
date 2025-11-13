@@ -1,26 +1,26 @@
 cmake_minimum_required(VERSION 3.8)
-project(PureNDT-3D-ROS2)
+project(purendt_3d_ros2)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
 # find dependencies
-find_package(ament_cmake REQUIRED)
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
+find_package(ament_cmake_auto REQUIRED)
+add_subdirectory(PureNDT-3D)
 
-if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  # the following line skips the linter which checks for copyrights
-  # comment the line when a copyright and license is added to all source files
-  set(ament_cmake_copyright_FOUND TRUE)
-  # the following line skips cpplint (only works in a git repo)
-  # comment the line when this package is in a git repo and when
-  # a copyright and license is added to all source files
-  set(ament_cmake_cpplint_FOUND TRUE)
-  ament_lint_auto_find_test_dependencies()
-endif()
+ament_auto_find_build_dependencies()
 
-ament_package()
+ament_auto_add_library(purendt_3d_ros2 SHARED
+	src/purendt_3d_ros2.cpp
+)
+target_link_libraries(purendt_3d_ros2
+	PureNDT3D
+)
+
+rclcpp_components_register_node(purendt_3d_ros2
+	PLUGIN "PureNDT3D::PureNDT3DNode"
+	EXECUTABLE purendt_3d_node
+)
+
+ament_auto_package()
